@@ -1,0 +1,28 @@
+A simple Groovy function which enables Flowdock notifications to be sent from a Jenkins Pipeline.
+
+You must declare use of the library somewhere before use:
+
+```library 'flowdock-notifier'```
+
+Then, call `flowdockNotify` in an appropriate place in your pipeline.  It needs to be a _step_-class block, including and probably most appropriately a _post_ block.  There are three arguments:
+
+1. `this` - passes the script object to the notifier function to provide necessary context
+2. API token for Flowdock.  This can be retrieved from your Flowdock profile page
+3. A string containing list of tags (optional).
+
+For example:
+
+```
+library 'flowdock-notifier'
+
+pipeline {
+    // ...
+    post { 
+        change { 
+            flowdockNotify this,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', '#test'
+        }
+    }
+}
+```
+
+

@@ -54,7 +54,7 @@ pipeline {
         }
     }
     post { 
-        change { 
+        changed { 
             flowdockNotify this,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', '#test'
         }
     }

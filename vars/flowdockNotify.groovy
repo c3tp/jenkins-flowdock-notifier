@@ -62,7 +62,7 @@ def call(script, flowToken, tags = '') {
 
     // build payload
     def payload = JsonOutput.toJson([
-                flow_token: ${flowToken},
+                flow_token: flowToken,
                 event: 'message',
                 content: content,
                 tags:tags

@@ -5,11 +5,11 @@ import groovy.json.JsonOutput
 import java.net.URLEncoder
 import hudson.model.Result
 
-def call(script, apiToken, tags = '') {
+def call(script, flowToken, tags = '') {
 
     tags = tags.replaceAll("\\s","")
 
-    def flowdockURL = "https://api.flowdock.com/v1/messages/team_inbox/${apiToken}"
+    def flowdockURL = "https://api.flowdock.com/messages"
 
     // build status of null means successful
     def buildStatus =  script.currentBuild.result ? script.currentBuild.result : 'SUCCESS'
@@ -61,15 +61,12 @@ def call(script, apiToken, tags = '') {
       URL: <a href="${script.env.BUILD_URL}">${script.currentBuild.fullDisplayName}</a><br />"""
 
     // build payload
-    def payload = JsonOutput.toJson([source : "Jenkins",
-                                     project : script.env.JOB_BASE_NAME,
-                                     from_address: fromAddress,
-                                     from_name: 'Jenkins',
-                                     subject: subject,
-                                     tags: tags,
-                                     content: content,
-                                     link: script.env.BUILD_URL
-                                     ])
+    def payload = JsonOutput.toJson([
+                flow_token: ${flowToken},
+                event: 'message',
+                content: content,
+                tags:tags
+                ])
 
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();

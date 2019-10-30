@@ -63,7 +63,7 @@ def call(script, flowToken, tags = '', type) {
 
     def payload
 
-    if (type = 'inbox') {
+    if (type == 'inbox') {
         // Post is going into the flow as an inbox message
 
          def content = """<h3>${script.env.JOB_BASE_NAME} ${subject}</h3>

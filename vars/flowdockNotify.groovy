@@ -56,10 +56,10 @@ def call(script, flowToken, tags = '') {
 
     // build message
     def content = """${script.currentBuild.fullDisplayName}
-      Build: ${script.currentBuild.displayName}
       Result: ${buildStatus}
       URL: ${script.env.BUILD_URL}
-      Author: ${script.env.GIT_AUTHOR_NAME}"""
+      Author: ${script.env.GIT_COMMITTER_NAME}
+      Commit: ${script.env.GIT_COMMIT}"""
 
     // build payload
     def payload = JsonOutput.toJson([

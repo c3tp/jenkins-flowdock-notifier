@@ -5,7 +5,7 @@ import groovy.json.JsonOutput
 import java.net.URLEncoder
 import hudson.model.Result
 
-def call(script, flowToken, tags = '', type) {
+def call(script, type, flowToken, tags = '') {
 
     tags = tags.replaceAll("\\s","")
 
@@ -91,7 +91,7 @@ def call(script, flowToken, tags = '', type) {
 
     } else {
         // Post is going into flow as a chat message
-        def content = """${script.env.JOB_BASE_NAME} ${subject}
+        def content = """${subject}
             Result: ${buildStatus}
             Build: ${script.currentBuild.displayName}
             URL: ${script.env.BUILD_URL}

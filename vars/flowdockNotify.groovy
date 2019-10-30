@@ -9,6 +9,8 @@ def call(script, flowToken, tags = '', type) {
 
     tags = tags.replaceAll("\\s","")
 
+    def flowdockURL = "https://api.flowdock.com/messages"
+
     // build status of null means successful
     def buildStatus =  script.currentBuild.result ? script.currentBuild.result : 'SUCCESS'
 
@@ -104,10 +106,6 @@ def call(script, flowToken, tags = '', type) {
                 tags:tags
         ])
     }
-
-
-
-
 
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();

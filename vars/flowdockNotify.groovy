@@ -17,6 +17,9 @@ def call(script, type, flowToken, tags = '') {
     // create subject
     def subject = "${script.env.JOB_BASE_NAME} build ${script.currentBuild.displayName.replaceAll("#", "")}"
 
+    // we use the build+XX@flowdock.com addresses for their yay/nay avatars
+    def fromAddress = ''
+
     def colorStatus = ''
 
     // update subject and set from address based on build status
@@ -25,32 +28,44 @@ def call(script, type, flowToken, tags = '') {
         def prevResult = script.currentBuild.getPreviousBuild() != null ? script.currentBuild.getPreviousBuild().getResult() : null;
         if (Result.FAILURE.toString().equals(prevResult) || Result.UNSTABLE.toString().equals(prevResult)) {
           subject += ' was fixed'
+          fromAddress = 'build+ok@flowdock.com'
           colorStatus = 'green'
           break
         }
         subject += ' was successful'
+        fromAddress = 'build+ok@flowdock.com'
         colorStatus = 'green'
         break
       case 'FAILURE':
         subject += ' failed'
+        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'red'
         break
       case 'UNSTABLE':
         subject += ' was unstable'
+        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'yellow'
         break
       case 'ABORTED':
         subject += ' was aborted'
+        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'grey'
         break
       case 'NOT_BUILT':
         subject += ' was not built'
+        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'grey'
         break
       case 'FIXED':
         subject = ' was fixed'
+        fromAddress = 'build+ok@flowdock.com'
         colorStatus = 'green'
         break
+    }
+
+    def authorName = script.env.GIT_COMMITTER_NAME
+    if (authorName == null) {
+        authorName = "Jenkins"
     }
 
     def payload
@@ -68,9 +83,13 @@ def call(script, type, flowToken, tags = '') {
                  value: buildStatus
          ])
 
+         if (script.env.GIT_COMMITTER_EMAIL != null) {
+            fromAddress = script.env.GIT_COMMITTER_EMAIL
+         }
+
          def authorValues = JsonOutput.toJson([
-                 name : script.env.GIT_COMMITTER_NAME,
-                 email: script.env.GIT_COMMITTER_EMAIL
+                 name : authorName,
+                 email: fromAddress
          ])
 
          def threadValues = JsonOutput.toJson([
@@ -95,7 +114,7 @@ def call(script, type, flowToken, tags = '') {
             Result: ${buildStatus}
             Build: ${script.currentBuild.displayName}
             URL: ${script.env.BUILD_URL}
-            Author: ${script.env.GIT_COMMITTER_NAME}
+            Author: ${authorName}
             Commit: ${script.env.GIT_COMMIT}"""
 
         // build payload

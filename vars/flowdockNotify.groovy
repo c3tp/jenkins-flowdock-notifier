@@ -73,21 +73,25 @@ def call(script, type, flowToken, tags = '') {
            Result: <strong>${buildStatus}<br />
            URL: <a href="${script.env.BUILD_URL}">${script.currentBuild.fullDisplayName}</a><br />"""
 
-            payload = JsonOutput.toJson([
-                     flow_token: flowToken,
-                     event: 'activity',
-                     title: script.env.JOB_BASE_NAME,
-                     body: content,
-                     external_thread_id: script.env.GIT_COMMIT,
-                     status: [
-                             color: colorStatus,
-                             value: buildStatus
-                     ],
-                     author: [
-                         name : script.env.GIT_COMMITTER_NAME,
-                         email: fromAddress
-                     ]
-                    ])
+         def statusValues = JsonOutput.toJson([
+                 color: colorStatus,
+                 value: buildStatus
+         ])
+
+         def authorValues = JsonOutput.toJson([
+                 name : script.env.GIT_COMMITTER_NAME,
+                 email: fromAddress
+         ])
+
+         payload = JsonOutput.toJson([
+                 flow_token: flowToken,
+                 event: 'activity',
+                 title: script.env.JOB_BASE_NAME,
+                 body: content,
+                 external_thread_id: script.env.GIT_COMMIT,
+                 status: statusValues,
+                 author: authorValues
+         ])
 
     } else {
         // Post is going into flow as a chat message

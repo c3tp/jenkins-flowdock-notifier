@@ -91,7 +91,7 @@ def call(script, type, flowToken, tags = '') {
                  email: ${fromAddress} """
 
          def threadValues = """
-                 status: ${statusValues},
+                 status: { ${statusValues} },
                  body: ${content},
                  title: ${ subject }"""
 
@@ -99,9 +99,9 @@ def call(script, type, flowToken, tags = '') {
                  flow_token: flowToken,
                  event: 'activity',
                  external_thread_id: script.env.GIT_COMMIT,
-                 thread: [ threadValues ],
+                 thread: { threadValues },
                  title: "",
-                 author: [ authorValues ]
+                 author: { authorValues }
          ])
 
     } else {

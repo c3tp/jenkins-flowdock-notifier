@@ -79,9 +79,9 @@ def call(script, type, flowToken, tags = '') {
                      title: script.env.JOB_BASE_NAME,
                      body: content,
                      external_thread_id: script.env.GIT_COMMIT,
-                     "status": [
-                             "color": colorStatus,
-                             "value": buildStatus
+                     status: [
+                             color: colorStatus,
+                             value: buildStatus
                      ],
                      author: [
                          name : script.env.GIT_COMMITTER_NAME,

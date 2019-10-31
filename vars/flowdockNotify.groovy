@@ -17,9 +17,6 @@ def call(script, type, flowToken, tags = '') {
     // create subject
     def subject = "${script.env.JOB_BASE_NAME} build ${script.currentBuild.displayName.replaceAll("#", "")}"
 
-    // we use the build+XX@flowdock.com addresses for their yay/nay avatars
-    def fromAddress = ''
-
     def colorStatus = ''
 
     // update subject and set from address based on build status
@@ -28,37 +25,30 @@ def call(script, type, flowToken, tags = '') {
         def prevResult = script.currentBuild.getPreviousBuild() != null ? script.currentBuild.getPreviousBuild().getResult() : null;
         if (Result.FAILURE.toString().equals(prevResult) || Result.UNSTABLE.toString().equals(prevResult)) {
           subject += ' was fixed'
-          fromAddress = 'build+ok@flowdock.com'
           colorStatus = 'green'
           break
         }
         subject += ' was successful'
-        fromAddress = 'build+ok@flowdock.com'
         colorStatus = 'green'
         break
       case 'FAILURE':
         subject += ' failed'
-        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'red'
         break
       case 'UNSTABLE':
         subject += ' was unstable'
-        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'yellow'
         break
       case 'ABORTED':
         subject += ' was aborted'
-        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'grey'
         break
       case 'NOT_BUILT':
         subject += ' was not built'
-        fromAddress = 'build+fail@flowdock.com'
         colorStatus = 'grey'
         break
       case 'FIXED':
         subject = ' was fixed'
-        fromAddress = 'build+ok@flowdock.com'
         colorStatus = 'green'
         break
     }
@@ -71,7 +61,7 @@ def call(script, type, flowToken, tags = '') {
          def content = """<h3>${script.env.JOB_BASE_NAME} ${subject}</h3>
            Build: ${script.currentBuild.displayName}<br />
            Result: <strong>${buildStatus}<br />
-           URL: <a href="${script.env.BUILD_URL}">${script.currentBuild.fullDisplayName}</a><br />"""
+           URL: ${script.env.BUILD_URL}<br />"""
 
          def statusValues = JsonOutput.toJson([
                  color: colorStatus,
@@ -80,16 +70,22 @@ def call(script, type, flowToken, tags = '') {
 
          def authorValues = JsonOutput.toJson([
                  name : script.env.GIT_COMMITTER_NAME,
-                 email: fromAddress
+                 email: script.env.GIT_COMMITTER_EMAIL
+         ])
+
+         def threadValues = JsonOutput.toJson([
+                 status: statusValues,
+                 body: content,
+                 title: subject
+
          ])
 
          payload = JsonOutput.toJson([
                  flow_token: flowToken,
                  event: 'activity',
-                 title: script.env.JOB_BASE_NAME,
-                 body: content,
                  external_thread_id: script.env.GIT_COMMIT,
-                 status: statusValues,
+                 thread: threadValues,
+                 title: "",
                  author: authorValues
          ])
 
@@ -110,7 +106,6 @@ def call(script, type, flowToken, tags = '') {
                 tags:tags
         ])
     }
-    println(payload)
 
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();

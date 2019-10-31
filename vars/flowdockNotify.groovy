@@ -94,7 +94,7 @@ def call(script, type, flowToken, tags = '') {
                          body: content,
                          title: subject
                  ],
-                 title: "",
+                 title: "Jenkins update",
                  author: [
                          name : authorName,
                          email: fromAddress
@@ -118,8 +118,7 @@ def call(script, type, flowToken, tags = '') {
                 tags:tags
         ])
     }
-
-    println(payload)
+    
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();
     post.setRequestMethod("POST");

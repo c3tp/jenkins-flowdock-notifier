@@ -58,10 +58,10 @@ def call(script, type, flowToken, tags = '') {
     if (type == 'inbox') {
         // Post is going into the flow as an inbox message
 
-         def content = """<h3>${script.env.JOB_BASE_NAME} ${subject}</h3>
-           Build: ${script.currentBuild.displayName}<br />
-           Result: <strong>${buildStatus}<br />
-           URL: ${script.env.BUILD_URL}<br />"""
+         def content = """${subject}
+           Build: ${script.currentBuild.displayName}
+           Result: ${buildStatus}
+           URL: ${script.env.BUILD_URL}"""
 
          def statusValues = JsonOutput.toJson([
                  color: colorStatus,

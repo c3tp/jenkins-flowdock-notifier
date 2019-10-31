@@ -78,30 +78,34 @@ def call(script, type, flowToken, tags = '') {
            Result: ${buildStatus}
            URL: ${script.env.BUILD_URL}"""
 
-         def statusValues = """
-                 color: ${colorStatus},
-                 value: ${buildStatus}"""
+         def statusValues = JsonOutput.toJson([
+                 color: colorStatus,
+                 value: buildStatus
+         ])
 
          if (script.env.GIT_COMMITTER_EMAIL != null) {
             fromAddress = script.env.GIT_COMMITTER_EMAIL
          }
 
-         def authorValues = """
-                 name : ${authorName},
-                 email: ${fromAddress} """
+         def authorValues = JsonOutput.toJson([
+                 name : authorName,
+                 email: fromAddress
+         ])
 
-         def threadValues = """
-                 status: { ${statusValues} },
-                 body: ${content},
-                 title: ${ subject }"""
+         def threadValues = JsonOutput.toJson([
+                 status: statusValues,
+                 body: content,
+                 title: subject
+
+         ])
 
          payload = JsonOutput.toJson([
                  flow_token: flowToken,
                  event: 'activity',
                  external_thread_id: script.env.GIT_COMMIT,
-                 thread: { threadValues },
+                 thread: threadValues,
                  title: "",
-                 author: { authorValues }
+                 author: authorValues
          ])
 
     } else {

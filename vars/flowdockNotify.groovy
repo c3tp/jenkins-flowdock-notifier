@@ -92,9 +92,9 @@ def call(script, type, flowToken, tags = '') {
                                  value: buildStatus
                          ],
                          body: content,
-                         title: subject
+                         title: script.env.JOB_BASE_NAME
                  ],
-                 title: "Jenkins update",
+                 title: "update",
                  author: [
                          name : authorName,
                          email: fromAddress
@@ -104,11 +104,11 @@ def call(script, type, flowToken, tags = '') {
     } else {
         // Post is going into flow as a chat message
         def content = """${subject}
-            Result: ${buildStatus}
-            Build: ${script.currentBuild.displayName}
-            URL: ${script.env.BUILD_URL}
-            Author: ${authorName}
-            Commit: ${script.env.GIT_COMMIT}"""
+            <br>Result: ${buildStatus}
+            <br>Build: ${script.currentBuild.displayName}
+            <br>URL: ${script.env.BUILD_URL}
+            <br>Author: ${authorName}
+            <br>Commit: ${script.env.GIT_COMMIT}"""
 
         // build payload
         payload = JsonOutput.toJson([
@@ -118,7 +118,7 @@ def call(script, type, flowToken, tags = '') {
                 tags:tags
         ])
     }
-    
+
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();
     post.setRequestMethod("POST");

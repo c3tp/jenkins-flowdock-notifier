@@ -118,7 +118,7 @@ def call(script, type, flowToken, tags = '') {
                 tags:tags
         ])
     }
-    println("payload")
+    println(payload)
 
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();

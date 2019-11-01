@@ -4,6 +4,8 @@ A simple Groovy script which enables Flowdock notifications to be sent from a Je
 
 Inspired by and lifted from [this thread and this comment specifically](https://github.com/jenkinsci/flowdock-plugin/issues/24#issuecomment-271784565).
 
+#### NOTE: Flowdock inbox push api is [depreciated](https://www.flowdock.com/api/team-inbox)
+
 ## Prerequisites
 
 The following must be available in your Jenkins installation to use this library:
@@ -11,6 +13,7 @@ The following must be available in your Jenkins installation to use this library
 * Pipeline plugins, of course
 * [Pipeline: Shared Groovy Libraries](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Shared+Groovy+Libraries+Plugin) plugin
 * An appropriate source code management plugin supported by the above, probably [the GitHub Branch Source](https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Branch+Source+Plugin) plugin
+* Application created and integrated with the flow on flowdock you want to send notifications too. See below for more info. 
 
 ## Installation
 
@@ -35,7 +38,8 @@ You must declare use of the library somewhere before use:
 Then, call `flowdockNotify` in an appropriate place in your pipeline.  It needs to be a _step_-class block, including and probably most appropriately a _post_ block.  There are three arguments:
 
 1. `this` - passes the script object to the notifier function to provide necessary context
-2. API token for Flowdock.  This can be retrieved from your Flowdock profile page
+2. `type` - tells the script if you want a flow message or inbox message. Only accepts string `message` or `inbox`
+2. A sources API Flow Token.
 3. A string containing list of tags (optional).
 
 For example:
@@ -44,21 +48,19 @@ For example:
 library 'flowdock-notifier'
 
 pipeline {
-    agent any
-    stages {
-        stage('Example') {
-            steps {
-                echo 'Hello World'
-                sh '/bin/false'
-            }
-        }
-    }
+    // ...
     post { 
         changed { 
-            flowdockNotify this,'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', '#test'
+            flowdockNotify this, 'type', 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', '#test'
         }
     }
 }
 ```
+
+More info:
+
+In order to get a flow_token to a source, you will need to create an application.
+* Sources: https://www.flowdock.com/api/authentication#source-token
+* Creating an application: https://www.flowdock.com/oauth/applications
 
 

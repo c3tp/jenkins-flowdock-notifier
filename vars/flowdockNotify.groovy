@@ -74,8 +74,6 @@ def call(script, type, flowToken, tags = '') {
         // Post is going into the flow as an inbox message
 
          def content = """
-           <br>Build: ${script.currentBuild.displayName}
-           <br>Result: ${buildStatus}
            <br>URL: <a href="${script.env.BUILD_URL}">Link</a>"""
 
          if (script.env.GIT_COMMITTER_EMAIL != null) {
@@ -92,7 +90,7 @@ def call(script, type, flowToken, tags = '') {
                                  value: buildStatus
                          ],
                          body: content,
-                         title:
+                         title: "${script.env.JOB_BASE_NAME} build ${script.currentBuild.displayName}"
                  ],
                  title: "update",
                  author: [

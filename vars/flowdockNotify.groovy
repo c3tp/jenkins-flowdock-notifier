@@ -80,6 +80,8 @@ def call(script, type, flowToken, tags = '') {
             fromAddress = script.env.GIT_COMMITTER_EMAIL
          }
 
+         def title = "${script.env.JOB_BASE_NAME} build ${script.currentBuild.displayName}"
+
          payload = JsonOutput.toJson([
                  flow_token: flowToken,
                  event: 'activity',
@@ -90,7 +92,7 @@ def call(script, type, flowToken, tags = '') {
                                  value: buildStatus
                          ],
                          body: content,
-                         title: "${script.env.JOB_BASE_NAME} build ${script.currentBuild.displayName}"
+                         title: title
                  ],
                  title: "update",
                  author: [

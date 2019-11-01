@@ -4,6 +4,8 @@ A simple Groovy script which enables Flowdock notifications to be sent from a Je
 
 Inspired by and lifted from [this thread and this comment specifically](https://github.com/jenkinsci/flowdock-plugin/issues/24#issuecomment-271784565).
 
+#### NOTE: Flowdock inbox push api is [depreciated](https://www.flowdock.com/api/team-inbox)
+
 ## Prerequisites
 
 The following must be available in your Jenkins installation to use this library:
@@ -11,6 +13,7 @@ The following must be available in your Jenkins installation to use this library
 * Pipeline plugins, of course
 * [Pipeline: Shared Groovy Libraries](https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Shared+Groovy+Libraries+Plugin) plugin
 * An appropriate source code management plugin supported by the above, probably [the GitHub Branch Source](https://wiki.jenkins-ci.org/display/JENKINS/GitHub+Branch+Source+Plugin) plugin
+* Application created and integrated with the flow on flowdock you want to send notifications too. See below for more info. 
 
 ## Installation
 

@@ -73,7 +73,8 @@ def call(script, type, flowToken, tags = '') {
     if (type == 'inbox') {
         // Post is going into the flow as an inbox message
 
-         def content = """<br>URL: <a href='${script.env.BUILD_URL}'>Link</a>"""
+         def content = """URL: <a href='${script.env.BUILD_URL}'>Link to Build</a>
+                        <br> ${tags}"""
 
          if (script.env.GIT_COMMITTER_EMAIL != null) {
             fromAddress = script.env.GIT_COMMITTER_EMAIL
@@ -117,7 +118,6 @@ def call(script, type, flowToken, tags = '') {
                 tags:tags
         ])
     }
-    println(payload)
 
     // craft and send the request
     def post = new URL(flowdockURL).openConnection();

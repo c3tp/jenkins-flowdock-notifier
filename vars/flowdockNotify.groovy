@@ -73,8 +73,7 @@ def call(script, type, flowToken, tags = '') {
     if (type == 'inbox') {
         // Post is going into the flow as an inbox message
 
-         def content = """
-           <br>URL: <a href="${script.env.BUILD_URL}">Link</a>"""
+         def content = """<br>URL: <a href='${script.env.BUILD_URL}'>Link</a>"""
 
          if (script.env.GIT_COMMITTER_EMAIL != null) {
             fromAddress = script.env.GIT_COMMITTER_EMAIL
